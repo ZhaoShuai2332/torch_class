@@ -85,6 +85,18 @@ def show_pits(images, labels, height=3, width=3):
             axes[i, j].axis('off')  # 隐藏坐标轴
     plt.show()  # 显示绘图
 
+def show_compare_pits(image, label, predict_value):
+    # 设置支持中文字体
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
+    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+    # 可视化
+    plt.imshow(image, cmap=plt.cm.gray)
+    plt.title(f"实际为： {label}， 预测为： {predict_value}")
+    plt.axis('off')  # 隐藏坐标轴
+    plt.show()  # 显示绘图
+
+
 # if __name__ == "__main__":
 #     # 解析MNIST数据集
 #     train_feature, train_label, test_feature, test_label = fetch_mnist_data()
