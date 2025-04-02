@@ -42,12 +42,6 @@ def parse_mnist(minst_file_addr: str = None, flatten: bool = False, one_hot: boo
 
     return data
 
-
-# if __name__ == "__main__":
-#     data = parse_mnist(minst_file_addr = os.path.join(script_dir, 'MNIST', 'train-images-idx3-ubyte.gz'))  # t10k-images-idx1-ubyte.gz文件应该和本脚本在同一个目录下，否则应该修改地址
-#     print(len(data))  # 10000
-#     print(data[0:10])  # [7 2 1 0 4 1 4 9 5 9]
-
 def fetch_mnist_data():
     train_feature_path = os.path.join(script_dir, 'MNIST', 'train-images-idx3-ubyte.gz')
     train_label_path = os.path.join(script_dir, 'MNIST', 'train-labels-idx1-ubyte.gz')
