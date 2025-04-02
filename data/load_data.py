@@ -7,6 +7,8 @@ import gzip
 import logging
 
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -57,3 +59,37 @@ def fetch_mnist_data():
 
     return train_feature, train_label, test_feature, test_label
 
+def show_pit(image, label):
+    # 设置支持中文字体
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
+    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+    # 可视化
+    plt.imshow(image, cmap=plt.cm.gray)
+    plt.title(f"标签为 {label}")
+    plt.axis('off')  # 隐藏坐标轴
+    plt.show()  # 显示绘图
+
+def show_pits(images, labels, height=3, width=3):
+    # 设置支持中文字体
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
+    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+    # 多图可视化
+    fig, axes = plt.subplots(width, height)
+    fig.subplots_adjust(hspace=0.5, wspace=0.5)  # 设置子图间距
+    for i in range(width):
+        for j in range(height):
+            axes[i, j].imshow(images[i * height + j], cmap=plt.cm.gray)
+            axes[i, j].set_title(f"标签为 {labels[i * height + j]}")
+            axes[i, j].axis('off')  # 隐藏坐标轴
+    plt.show()  # 显示绘图
+
+# if __name__ == "__main__":
+#     # 解析MNIST数据集
+#     train_feature, train_label, test_feature, test_label = fetch_mnist_data()
+
+#     # 可视化
+#     show_pit(image=train_feature[6666].reshape(28, 28), label=train_label[0].argmax())
+
+#     show_pits(images=train_feature[0:9].reshape(9, 28, 28), labels=train_label[0:9].argmax(axis=1), height=3, width=3)
