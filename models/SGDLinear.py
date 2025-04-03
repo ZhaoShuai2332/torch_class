@@ -6,53 +6,37 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# 通过随机梯度下降实现线性回归
-class SGDLinearRegression(nn.Module):
-    def __init__(self, input_dim, output_dim):
-        super(SGDLinearRegression, self).__init__()
-        self.linear = nn.Linear(input_dim, output_dim)
 
+class SGDLinear(nn.Module):
+    def __init__(self):
+        # 初始化父类（Module）
+        super(SGDLinear, self).__init__()
+        # 创建一个线性层，输入维度为784（28x28像素），输出维度为10（数字0-9）
+        self.linear = nn.Linear(784, 10)
+    
     def forward(self, x):
+        # 定义前向传播过程
+        # x: 输入数据
+        # 返回: 模型输出
         return self.linear(x)
     
-    def backward(self, x, y):
-        # 前向传播
-        y_pred = self.forward(x)
-        # 计算损失
-        loss = F.mse_loss(y_pred, y)
-        # 清空梯度
-        self.zero_grad()
-        # 反向传播
-        loss.backward()
-        return loss.item()
+    def get_optimizer(self, learning_rate=0.02, momentum=0.9):
+        # 获取优化器，使用随机梯度下降（SGD）算法
+        # model: 模型参数
+        # learning_rate: 学习率，默认为0.01
+        # momentum: 动量参数，默认为0.9
+        return optim.SGD(self.parameters(), lr=learning_rate, momentum=momentum)
     
-    def update(self, learning_rate):
-        # 更新参数
-        for param in self.parameters():
-            param.data -= learning_rate * param.grad.data
-        return self.linear.weight.data, self.linear.bias.data
+    def get_loss_function(self):
+        # 获取损失函数，使用交叉熵损失
+        # 适用于分类问题
+        return nn.CrossEntropyLoss()
     
-    def train_model(self, x_train, y_train, learning_rate=0.001, epochs=100):
-        # 训练模型
-        losses = []
-        for epoch in range(epochs):
-            loss = self.backward(x_train, y_train)
-            self.update(learning_rate)
-            losses.append(loss)
-            if epoch % 100 == 0:
-                print(f'Epoch {epoch}, Loss: {loss}')
-        return losses
+    def get_scheduler(self, optimizer):
+        # 获取学习率调度器，使用阶梯式学习率衰减
+        # optimizer: 优化器
+        # num_epochs: 训练轮数，默认为10
+        # 每10个epoch学习率降为原来的0.1倍
+        return optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     
-    def predict(self, x):
-        # 预测
-        with torch.no_grad():
-            return self.forward(x).numpy()
-        
-    def plot_loss(self, losses):
-        # 绘制损失曲线
-        plt.plot(losses)
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.title('Loss Curve')
-        plt.show()
     

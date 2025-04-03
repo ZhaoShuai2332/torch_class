@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import torch
+from torchvision import transforms
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -68,13 +69,25 @@ def fetch_mnist_data():
     test_feature = np.copy(test_feature)
     test_label = np.copy(test_label)
 
-    # Convert NumPy arrays to PyTorch tensors
-    train_feature = torch.from_numpy(train_feature).float()
-    train_label = torch.from_numpy(train_label).long()
-    test_feature = torch.from_numpy(test_feature).float()
-    test_label = torch.from_numpy(test_label).long()
+    # 定义数据转换操作，包括随机裁剪、水平翻转和标准化
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))  # MNIST 经验均值与方差
+    ])
 
-    return train_feature, train_label, test_feature, test_label
+    # 应用数据转换
+    train_features = transform(train_feature)
+    test_features = transform(test_feature)
+
+    train_features = train_features.squeeze(0)
+    test_features = test_features.squeeze(0)
+    # Convert NumPy arrays to PyTorch tensors
+    # train_features = torch.from_numpy(train_features).float()
+    train_labels = torch.from_numpy(train_label).long()
+    # test_features = torch.from_numpy(test_features).float()
+    test_labels = torch.from_numpy(test_label).long()
+
+    return train_features, train_labels, test_features, test_labels
 
 def show_pit(image, label):
     # 设置支持中文字体
