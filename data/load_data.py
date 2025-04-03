@@ -52,39 +52,32 @@ def fetch_mnist_data():
     test_feature_path = os.path.join(script_dir, 'MNIST', 't10k-images-idx3-ubyte.gz')
     test_label_path = os.path.join(script_dir, 'MNIST', 't10k-labels-idx1-ubyte.gz')
 
-    # 解析训练集数据
     train_feature = parse_mnist(minst_file_addr=train_feature_path, flatten=True)
     train_labels = parse_mnist(minst_file_addr=train_label_path, flatten=False, one_hot=True)
-    # 解析测试集数据
+
     test_feature = parse_mnist(minst_file_addr=test_feature_path, flatten=True)
     test_labels = parse_mnist(minst_file_addr=test_label_path, flatten=False, one_hot=True)
 
-    # Convert labels to NumPy arrays
     train_label = np.array([int(lab.argmax()) for lab in train_labels])
     test_label = np.array([int(lab.argmax()) for lab in test_labels])
 
-    # Make NumPy arrays writable
     train_feature = np.copy(train_feature)
     train_label = np.copy(train_label)
     test_feature = np.copy(test_feature)
     test_label = np.copy(test_label)
 
-    # 定义数据转换操作，包括随机裁剪、水平翻转和标准化
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))  # MNIST 经验均值与方差
     ])
 
-    # 应用数据转换
     train_features = transform(train_feature)
     test_features = transform(test_feature)
 
     train_features = train_features.squeeze(0)
     test_features = test_features.squeeze(0)
-    # Convert NumPy arrays to PyTorch tensors
-    # train_features = torch.from_numpy(train_features).float()
+
     train_labels = torch.from_numpy(train_label).long()
-    # test_features = torch.from_numpy(test_features).float()
     test_labels = torch.from_numpy(test_label).long()
 
     return train_features, train_labels, test_features, test_labels
