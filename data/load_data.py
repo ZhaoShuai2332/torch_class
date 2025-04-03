@@ -9,6 +9,7 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import torch
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -52,10 +53,30 @@ def fetch_mnist_data():
 
     # 解析训练集数据
     train_feature = parse_mnist(minst_file_addr=train_feature_path, flatten=True)
-    train_label = parse_mnist(minst_file_addr=train_label_path, flatten=False, one_hot=True)
+    train_labels = parse_mnist(minst_file_addr=train_label_path, flatten=False, one_hot=True)
     # 解析测试集数据
     test_feature = parse_mnist(minst_file_addr=test_feature_path, flatten=True)
-    test_label = parse_mnist(minst_file_addr=test_label_path, flatten=False, one_hot=True)
+    test_labels = parse_mnist(minst_file_addr=test_label_path, flatten=False, one_hot=True)
+
+    # Convert labels to NumPy arrays
+    train_label = np.array([int(lab.argmax()) for lab in train_labels])
+    test_label = np.array([int(lab.argmax()) for lab in test_labels])
+
+    # Make NumPy arrays writable
+    train_feature = np.copy(train_feature)
+    train_label = np.copy(train_label)
+    test_feature = np.copy(test_feature)
+    test_label = np.copy(test_label)
+
+    # Convert NumPy arrays to PyTorch tensors
+    train_feature = torch.from_numpy(train_feature).float()
+    train_label = torch.from_numpy(train_label).long()
+    test_feature = torch.from_numpy(test_feature).float()
+    test_label = torch.from_numpy(test_label).long()
+
+    # Reshape features to 4D tensors for Conv2d
+    train_feature = train_feature.reshape(-1, 1, 28, 28)
+    test_feature = test_feature.reshape(-1, 1, 28, 28)
 
     return train_feature, train_label, test_feature, test_label
 
@@ -85,7 +106,7 @@ def show_pits(images, labels, height=3, width=3):
             axes[i, j].axis('off')  # 隐藏坐标轴
     plt.show()  # 显示绘图
 
-def show_compare_pits(image, label, predict_value):
+def show_compare_pit(image, label, predict_value):
     # 设置支持中文字体
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
     plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
@@ -97,9 +118,14 @@ def show_compare_pits(image, label, predict_value):
     plt.show()  # 显示绘图
 
 
-# if __name__ == "__main__":
-#     # 解析MNIST数据集
-#     train_feature, train_label, test_feature, test_label = fetch_mnist_data()
+if __name__ == "__main__":
+    # 解析MNIST数据集
+    train_feature, train_label, test_feature, test_label = fetch_mnist_data()
+
+    print(len(train_feature))
+    print(len(train_label))
+    print(len(test_feature))
+    print(len(test_label))
 
 #     # 可视化
 #     show_pit(image=train_feature[6666].reshape(28, 28), label=train_label[0].argmax())

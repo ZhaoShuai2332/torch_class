@@ -1,4 +1,4 @@
-from models import LeNet5
+from models.LeNet5 import LeNet5
 from data import load_data
 import torch
 import torch.nn as nn
@@ -7,17 +7,16 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import torchvision
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 
 def preprocess_data(train_features, train_labels, test_features, test_labels):
     # 定义数据转换操作，包括随机裁剪、水平翻转和标准化
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,))
-    ])
+    # transform = transforms.Compose([
+    #     transforms.ToTensor(),
+    #     transforms.Normalize((0.5,), (0.5,))
+    # ])
     
     # 创建训练集和测试集
     train_dataset = torch.utils.data.TensorDataset(train_features, train_labels)
@@ -31,12 +30,12 @@ def preprocess_data(train_features, train_labels, test_features, test_labels):
 
 def train_model(train_loader, num_epochs=10):
     # 初始化 LeNet5 模型
-    model = LeNet5.LeNet5()
+    model = LeNet5()
     # 将模型移动到 GPU（如果可用）
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     # 获取模型的优化器
-    optimizer = LeNet5.get_optimizer(model)
+    optimizer = model.get_optimizer(learning_rate=0.01, momentum=0.9)
     # 定义损失函数为交叉熵损失
     criterion = nn.CrossEntropyLoss()
     # 初始化列表，用于存储每个 epoch 的训练损失和准确率
@@ -98,7 +97,7 @@ def train_model(train_loader, num_epochs=10):
 
 def test_model(test_loader):
     # 加载保存好的模型
-    model = LeNet5.LeNet5()
+    model = LeNet5()
     model.load_state_dict(torch.load('saved_models/lenet5.pth'))
     # 将模型移动到 GPU（如果可用）
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -131,10 +130,40 @@ def test_model(test_loader):
     # 返回测试集的准确率和预测结果
     return accuracy, predictions
 
-# if __name__ == '__main__':
-#     torch.manual_seed(42)  # 设置随机种子以确保可重复性
-#     # 加载数据集
-#     train_features, train_labels, test_features, test_labels = load_data.load_data()
-#     # 定义数据转换操作
+if __name__ == '__main__':
+    torch.manual_seed(42)  # 设置随机种子以确保可重复性
+    # 加载数据集
+    train_features, train_labels, test_features, test_labels = load_data.fetch_mnist_data()
+    
+    # # 定义数据转换操作
+    train_loader, test_loader = preprocess_data(train_features, train_labels, test_features, test_labels)
+    # 训练模型
+    train_loss, train_accuracy = train_model(train_loader, num_epochs=10)
+    # 测试模型
+    accuracy, predictions = test_model(test_loader)
+    # 绘制训练损失和准确率曲线
+    plt.figure(figsize=(12, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(train_loss, label='Train Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training Loss Curve')
+    plt.legend()
+    plt.subplot(1, 2, 2)
+    plt.plot(train_accuracy, label='Train Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title('Training Accuracy Curve')
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+    # 打印前十个预测于真实值的对比结果
+    # for i in range(10):
+    #     load_data.show_compare_pit(
+    #         image=test_features[i].reshape(28, 28), 
+    #         label=test_labels[i].argmax(), 
+    #         predict_value=predictions[i]
+    #     )
 
 
