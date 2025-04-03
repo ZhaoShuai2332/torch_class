@@ -17,6 +17,9 @@ def preprocess_data(train_features, train_labels, test_features, test_labels):
     #     transforms.ToTensor(),
     #     transforms.Normalize((0.5,), (0.5,))
     # ])
+    # Reshape features to 4D tensors for Conv2d
+    train_features = train_features.reshape(-1, 1, 28, 28)
+    test_features = test_features.reshape(-1, 1, 28, 28)
     
     # 创建训练集和测试集
     train_dataset = torch.utils.data.TensorDataset(train_features, train_labels)
@@ -158,12 +161,12 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
-    # 打印前十个预测于真实值的对比结果
-    # for i in range(10):
-    #     load_data.show_compare_pit(
-    #         image=test_features[i].reshape(28, 28), 
-    #         label=test_labels[i].argmax(), 
-    #         predict_value=predictions[i]
-    #     )
+    #打印前十个预测于真实值的对比结果
+    for i in range(10):
+        load_data.show_compare_pit(
+            image=test_features[i].reshape(28, 28), 
+            label=test_labels[i].argmax(), 
+            predict_value=predictions[i]
+        )
 
 

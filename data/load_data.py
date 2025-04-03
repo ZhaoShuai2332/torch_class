@@ -74,10 +74,6 @@ def fetch_mnist_data():
     test_feature = torch.from_numpy(test_feature).float()
     test_label = torch.from_numpy(test_label).long()
 
-    # Reshape features to 4D tensors for Conv2d
-    train_feature = train_feature.reshape(-1, 1, 28, 28)
-    test_feature = test_feature.reshape(-1, 1, 28, 28)
-
     return train_feature, train_label, test_feature, test_label
 
 def show_pit(image, label):
@@ -118,14 +114,14 @@ def show_compare_pit(image, label, predict_value):
     plt.show()  # 显示绘图
 
 
-if __name__ == "__main__":
-    # 解析MNIST数据集
-    train_feature, train_label, test_feature, test_label = fetch_mnist_data()
+# if __name__ == "__main__":
+#     # 解析MNIST数据集
+#     train_feature, train_label, test_feature, test_label = fetch_mnist_data()
 
-    print(len(train_feature))
-    print(len(train_label))
-    print(len(test_feature))
-    print(len(test_label))
+#     print(len(train_feature))
+#     print(len(train_label))
+#     print(len(test_feature))
+#     print(len(test_label))
 
 #     # 可视化
 #     show_pit(image=train_feature[6666].reshape(28, 28), label=train_label[0].argmax())
