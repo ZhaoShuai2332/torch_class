@@ -1,22 +1,15 @@
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
 class SGDLinear(nn.Module):
     def __init__(self):
         super(SGDLinear, self).__init__()
-        self.linear = nn.Linear(784, 10)
-        # self.linear = nn.Sequential(
-        #     nn.Linear(784, 32),
-        #     # nn.LeakyReLU(negative_slope=0.01),
-        #     nn.ReLU(),
-        #     nn.Linear(32, 10)
-        # )
+        # self.linear = nn.Linear(784, 10)
+        self.Sequential(
+            nn.Linear(784, 10),
+            # nn.Sigmoid()
+        )
     
     def forward(self, x):
         return self.linear(x)

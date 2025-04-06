@@ -1,13 +1,5 @@
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
-import torchvision
-import time
-import matplotlib.pyplot as plt
-import numpy as np
 
 class LeNet5(nn.Module):
     def __init__(self):
@@ -33,12 +25,4 @@ class LeNet5(nn.Module):
     def get_optimizer(model, learning_rate=0.01, momentum=0.9):
         optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
         return optimizer
-    
-    # def predict(model, inputs):
-    #     model.eval()
-    #     with torch.no_grad():
-    #         outputs = model(inputs)
-    #     _, predicted = torch.max(outputs.data, 1)
-    #     return predicted
-
 

@@ -8,13 +8,8 @@ from models.LeNet5 import LeNet5
 from data import load_data
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-import torchvision
 import matplotlib.pyplot as plt
-import numpy as np
 
 def preprocess_data(train_features, train_labels, test_features, test_labels):
     # 定义数据转换操作，包括随机裁剪、水平翻转和标准化
