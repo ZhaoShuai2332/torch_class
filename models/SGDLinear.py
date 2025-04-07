@@ -6,7 +6,7 @@ class SGDLinear(nn.Module):
     def __init__(self):
         super(SGDLinear, self).__init__()
         # self.linear = nn.Linear(784, 10)
-        self.Sequential(
+        self.linear = nn.Sequential(
             nn.Linear(784, 10),
             # nn.Sigmoid()
         )
