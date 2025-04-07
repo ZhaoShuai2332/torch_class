@@ -12,12 +12,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 def preprocess_data(train_features, train_labels, test_features, test_labels, validation_split=0.2):
-    # Split the training data into training and validation sets
     train_features, val_features, train_labels, val_labels = train_test_split(
         train_features, train_labels, test_size=validation_split, random_state=42
     )
 
-    # Reshape if necessary
     if train_features.dim() > 2:
         batch_size = train_features.size(0)
         train_features = train_features.view(batch_size, -1)
@@ -168,6 +166,6 @@ if __name__ == "__main__":
     plt.legend()
     plt.title('Training and Validation Accuracy')
     plt.show()
-    
+
     test_model(test_loader)
 
