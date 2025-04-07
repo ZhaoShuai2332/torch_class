@@ -46,6 +46,28 @@ def parse_mnist(minst_file_addr: str = None, flatten: bool = False, one_hot: boo
 
     return data
 
+def fetch_data():
+    train_feature_path = os.path.join(script_dir, 'MNIST', 'train-images-idx3-ubyte.gz')
+    train_label_path = os.path.join(script_dir, 'MNIST', 'train-labels-idx1-ubyte.gz')
+    test_feature_path = os.path.join(script_dir, 'MNIST', 't10k-images-idx3-ubyte.gz')
+    test_label_path = os.path.join(script_dir, 'MNIST', 't10k-labels-idx1-ubyte.gz')
+
+    train_feature = parse_mnist(minst_file_addr=train_feature_path, flatten=True)
+    train_labels = parse_mnist(minst_file_addr=train_label_path, flatten=False, one_hot=True)
+
+    test_feature = parse_mnist(minst_file_addr=test_feature_path, flatten=True)
+    test_labels = parse_mnist(minst_file_addr=test_label_path, flatten=False, one_hot=True)
+
+    train_label = np.array([int(lab.argmax()) for lab in train_labels])
+    test_label = np.array([int(lab.argmax()) for lab in test_labels])
+
+    train_feature = np.copy(train_feature)
+    train_label = np.copy(train_label)
+    test_feature = np.copy(test_feature)
+    test_label = np.copy(test_label)
+
+    return train_feature, train_label, test_feature, test_label
+
 def fetch_mnist_data():
     train_feature_path = os.path.join(script_dir, 'MNIST', 'train-images-idx3-ubyte.gz')
     train_label_path = os.path.join(script_dir, 'MNIST', 'train-labels-idx1-ubyte.gz')
